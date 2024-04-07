@@ -1,5 +1,5 @@
 # hidden config (contains private key)
-config.mjs
+config.ts
 
 # Logs
 logs
