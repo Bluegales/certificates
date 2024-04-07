@@ -1,3 +1,6 @@
+# hidden config (contains private key)
+config.mjs
+
 # Logs
 logs
 *.log

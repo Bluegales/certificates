@@ -1,15 +1,13 @@
-const BASE_URL = 'https://testnet-rpc.sign.global/api/'
-const SCHEMA = 'onchain_evm_84532_0xd'
-const ATTESTER = '0xc01A78dbf0b7fEbf6910784c4eB985Dcf67c1E5E'
+import { config } from "./config.mjs";
 
 function verifyHash(hash) {
     const queryParams = {
-        schema: SCHEMA,
-        attester: ATTESTER,
+        schema: config.schema,
+        attester: config.attester,
         indexingValue: hash,
     }
     const queryString = new URLSearchParams(queryParams).toString();
-    const fullUrl = BASE_URL + 'index/attestations' + '?' + queryString;
+    const fullUrl = config.baseUrl + 'index/attestations' + '?' + queryString;
     
     return fetch(fullUrl)
         .then(response => {
