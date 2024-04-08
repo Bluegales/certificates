@@ -15,3 +15,19 @@ to test run:
 `npx tsx sample_scripts/create_schema.ts`
 `npx tsx sample_scripts/attest_hash.ts`
 `npx tsx sample_scripts/verify_hash.ts`
+
+
+
+## TODO
+
+need code that
+1. uploads a file
+2. adds address to view permission
+3. adds attestation about the file
+   1. cid
+   2. name?
+
+and code that **in frontend?**
+1. gets all shared files from attestation
+2. download a file
+3. decrypt it
