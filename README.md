@@ -27,7 +27,7 @@ On a different frontend, which doesn’t need a connection to our backend the us
 ## overview 
 
 The project consists of 5 parts:
-- example_scripts used for development
+- [example_scripts](example_scripts) used for development
 - [overview](overview) the landing page with links to the following services
 - [attester](attester) the service to create and download the certificates
 - [validator](validator) the frontend to validate the certificates
