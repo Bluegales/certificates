@@ -7,9 +7,11 @@ const client = new SignProtocolClient(SpMode.OnChain, {
   account: privateKeyToAccount(config.privateKey),
 });
 
+const schemaId = config.documentHashSchema.split('_').slice(-1)[0];
+
 async function createAttestation(hash: `0x${string}`) {
   const res = await client.createAttestation({
-    schemaId: config.schemaId,
+    schemaId: schemaId,
     data: { hashOfDocument: hash },
     indexingValue: hash,
   });
