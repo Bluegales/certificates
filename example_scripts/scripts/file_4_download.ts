@@ -5,7 +5,10 @@ import { config } from "../config";
 async function decrypt(cid: string) {
     const account = privateKeyToAccount(config.privateKey)
 
+    // this is the message that we would need to give to the wallet to sign
     const message = await lighthouse.getAuthMessage(account.address)
+
+    // this step would then be done by the wallet not our account
     const signedMessage = await account.signMessage(message.data)
 
     var fileEncryptionKey
@@ -15,7 +18,7 @@ async function decrypt(cid: string) {
         signedMessage
     )
     if (fileEncryptionKey.data.key == null) {
-        throw "asd";
+        throw "?";
     }
 
     const decrypted = await lighthouse.decryptFile(
@@ -26,5 +29,5 @@ async function decrypt(cid: string) {
     console.log(decrypted)
 }
 
-decrypt('QmVDjmNsSFJnqZ4rJEyV4t9uatqrfpJcimLMk4AA7SRtwf')
+decrypt('QmWC9AkGa6vSbR4yizoJrFMfmZh4XjZXxvRDknk2LdJffc')
 

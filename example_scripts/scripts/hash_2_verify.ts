@@ -16,7 +16,7 @@ async function testAttestation(attestationId: string, hash: string): Promise<Boo
         console.debug('revoked')
         return false
     }
-    if (res.schemaId != config.schemaId) {
+    if (res.schemaId != config.documentHashSchema) {
         console.debug('wrong schema')
         return false
     }
@@ -46,7 +46,7 @@ async function getAttestationId(hash: string): Promise<string | null> {
         message?: string;
     }
     const queryParams = {
-        schema: config.schema,
+        schemaId: config.documentHashSchema,
         attester: config.attester,
         indexingValue: hash,
     };

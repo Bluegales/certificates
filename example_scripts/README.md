@@ -1,36 +1,74 @@
-# example_scripts
+# Example Scripts
 
-This folder contains scripts to easily test single parts of the whole project.
+This folder contains scripts for easily testing individual parts of the project.
 
-## Get started
+## Get Started
 
-`cp config_example.ts config.ts`
+1. Copy `config_example.ts` to `config.ts`.
+2. *Optional:* Change the chain.
+3. Add the following information
+   1. your private key you want to use to attest
+   2. your public key under attester.
+   3. your lighthouse api key.
+4. Ensure you have funds on the specified chain.
 
-**Optional:** change the chain
+To test, run:
 
-add your private key to the config
-add your public key under attester
-make sure you have funds on the chain you specified
-
-to test run:
 `npx tsx sample_scripts/script.ts`
 
-## Scripts
+# Scripts
+
+## Hash
+
+Scripts for verifying documents.
 
 ### create_schema
 
-This script facilitates the creation of a schema for attestations. The schema is designed to accommodate a single `uint256` value, representing the hash of the file.
+Facilitates creating a schema for attestations.
 
-Instructions
-- This script is intended for one-time use.
-- After deployment, ensure to add the generated schema ID to the `config.ts` file under `elements.schemaId`. 
+**Elements:**
+- `hash`: uint256 representing the hash of the file.
 
-### attest_hash
+**Instructions:**
+- One-time use.
+- After deployment, add the generated schema ID to `config.ts` under `documentHashSchema`.
 
-### derypt_file
+### attest
 
-### list_files
+Creates an on-chain attestation about the validity of a document.
 
-### upload_file
+### verify
 
-### verify_hash
+Verifies if a given hash is valid.
+
+## File
+
+Scripts for handling decentralized stored files.
+
+### create_schema
+
+Facilitates creating a schema for user files.
+
+**Elements:**
+- `name`: string representing the user's chosen name.
+- `cid`: uint256 representing the CID stored on Lighthouse.
+
+**Instructions:**
+- One-time use.
+- After deployment, add the generated schema ID to `config.ts` under `cidFilesSchema`.
+
+### upload
+
+Uploads a file to Lighthouse.
+
+### attest
+
+Creates an attestation with the users wallet as a recipient. This ensures the user does not lose their CID, making it impossible to access the file. Additionally, it adds a user-chosen name to the file, allowing them to identify it.
+
+### get_cids
+
+Uses the previously created attestation about CIDs belonging to a user to retrieve all files associated with the wallet.
+
+### download
+
+Requires the user to sign a message to prove their identity. Once authenticated, the file will be downloaded.

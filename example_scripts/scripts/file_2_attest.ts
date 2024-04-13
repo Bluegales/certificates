@@ -19,6 +19,10 @@ export const getIpfsHashFromBytes32 = (bytes32Hex: string) => {
   const hashStr = bs58.encode(hashBytes);
   return hashStr;
 };
+export const getIpfsHashFromUint256 = (uint: BigInt) => {
+  const bigint: BigInt = uint
+  return getIpfsHashFromBytes32('0x' + bigint.toString(16))
+}
 
 const client = new SignProtocolClient(SpMode.OnChain, {
   chain: config.chain,
@@ -32,6 +36,7 @@ async function createCidAttestation(name: string, cid: string) {
     schemaId: schemaId,
     data: { name: name, cid: getBytes32FromIpfsHash(cid) },
     indexingValue: cid,
+    recipients: ['0xc01A78dbf0b7fEbf6910784c4eB985Dcf67c1E5E']
   });
 
   console.log(res)
@@ -44,9 +49,7 @@ async function getAttestationCid(attestationId: string) {
   );
   const data = res.data
   if (typeof data === "object" && data !== null) {
-    const bigint: BigInt = data['cid']
-    const hexString = '0x' + bigint.toString(16);
-    data['cid'] = getIpfsHashFromBytes32(hexString)
+    data['cid'] = getIpfsHashFromUint256(data['cid'])
   }
   res.data = data
   console.log(res)
@@ -56,16 +59,9 @@ async function getAttestationCid(attestationId: string) {
 var name = 'test_file';
 var cid = 'QmWC9AkGa6vSbR4yizoJrFMfmZh4XjZXxvRDknk2LdJffc';
 
-// createCidAttestation(name, cid).then(response => {
-//   console.log('validating existance of attestation')
-//   getAttestation('0x42').then(response => {
-//     const data = response.data
-//     if (typeof data === "object" && data !== null) {
-//       const bigint: BigInt = data['cid']
-//       const hexString = '0x' + bigint.toString(16);
-//       console.log(getIpfsHashFromBytes32(hexString))
-//      }
-//   })
-// })
+createCidAttestation(name, cid).then(response => {
+  console.log('validating existance of attestation')
+  getAttestationCid(response.attestationId)
+})
 
-getAttestationCid('0x42')
+// getAttestationCid('0x43')
