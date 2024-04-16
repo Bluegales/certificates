@@ -1,4 +1,4 @@
-import { config } from "./config";
+import { config } from "./config_public";
 import { SignProtocolClient, SpMode, Attestation } from "@ethsign/sp-sdk";
 import { privateKeyToAccount } from "viem/accounts";
 
