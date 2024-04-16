@@ -1,5 +1,4 @@
-import fetch from 'node-fetch';
-import { config } from "../config.js";
+import { config } from "../config";
 import { SignProtocolClient, SpMode, Attestation } from "@ethsign/sp-sdk";
 import { privateKeyToAccount } from "viem/accounts";
 
@@ -7,6 +6,8 @@ const client = new SignProtocolClient(SpMode.OnChain, {
     chain: config.chain,
     account: privateKeyToAccount('0x0000000000000000000000000000000000000000000000000000000000000001'), // need it for the library to work
 });
+
+const schemaId = config.documentHashSchema.split('_').slice(-1)[0];
 
 async function testAttestation(attestationId: string, hash: string): Promise<Boolean> {
     const res = await client.getAttestation(
@@ -16,8 +17,8 @@ async function testAttestation(attestationId: string, hash: string): Promise<Boo
         console.debug('revoked')
         return false
     }
-    if (res.schemaId != config.documentHashSchema) {
-        console.debug('wrong schema')
+    if (res.schemaId != schemaId) {
+        console.debug('wrong schema got:', res.schemaId, " expected: ", schemaId)
         return false
     }
     if (res.attester != config.attester) {
