@@ -1,10 +1,8 @@
 import { config } from "./config_public";
-import { SignProtocolClient, SpMode, Attestation } from "@ethsign/sp-sdk";
-import { privateKeyToAccount } from "viem/accounts";
+import { SignProtocolClient, SpMode } from "@ethsign/sp-sdk";
 
 const client = new SignProtocolClient(SpMode.OnChain, {
-    chain: config.chain,
-    account: privateKeyToAccount('0x0000000000000000000000000000000000000000000000000000000000000001'), // need it for the library to work
+    chain: config.chain
 });
 
 const schemaId = config.documentHashSchema.split('_').slice(-1)[0];
@@ -13,21 +11,22 @@ async function testAttestation(attestationId: string, hash: string): Promise<Boo
     const res = await client.getAttestation(
         attestationId
     );
-    if (res.revoked != false) {
-        console.debug('revoked')
+    if (res.revoked !== false) {
+        console.log('revoked')
         return false
     }
-    if (res.schemaId != schemaId) {
-        console.debug('wrong schema got:', res.schemaId, " expected: ", schemaId)
+    if (res.schemaId !== schemaId) {
+        console.log('wrong schema got:', res.schemaId, " expected: ", schemaId)
         return false
     }
-    if (res.attester != config.attester) {
-        console.debug('wrong attester')
+    if (res.attester !== config.attester) {
+        console.log('wrong attester')
         return false
     }
     if (typeof res.data === 'object' && res.data !== null) {
-        if (res.data['hashOfDocument'] != hash) {
-            console.debug('wrong hash', res.data['hashOfDocument'], hash)
+        const hexString = `0x${res.data['hashOfDocument'].toString(16)}`;
+        if (hexString !== hash) {
+            console.log('wrong hash', res.data['hashOfDocument'], hexString, hash)
             return false
         }
     }
@@ -46,15 +45,14 @@ async function getAttestationId(hash: string): Promise<string | null> {
         };
         message?: string;
     }
-    console.log("test")
     const queryParams = {
         schemaId: config.documentHashSchema,
         attester: config.attester,
         indexingValue: hash,
     };
-    console.log("test2")
     const queryString: string = new URLSearchParams(queryParams).toString();
-    const fullUrl: string = config.baseUrl + 'index/attestations' + '?' + queryString;
+    const fullUrl: string = `${config.baseUrl}index/attestations?${queryString}`;
+    // const fullUrl: string = config.baseUrl + 'index/attestations' + '?' + queryString;
 
     try {
         const response = await fetch(fullUrl);
@@ -84,6 +82,7 @@ async function getAttestationId(hash: string): Promise<string | null> {
 async function verifyHash(hash: string) {
     const id = await getAttestationId(hash);
     if (id === null) {
+        console.log("didnt find attestation")
         return false
     }
     return testAttestation(id, hash);
