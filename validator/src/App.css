@@ -1,38 +1,92 @@
-.App {
+ody, html {
+  height: 100%;
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+.container {
+  display: flex;
+  height: 100vh; /* Use viewport height to fill the entire screen height */
+  width: 100vw; /* Use viewport width to fill the entire screen width */
+}
+
+.left-section, .right-section {
+  height: 100%; /* Ensure full height */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.left-section {
+  flex: 2; /* Adjust the ratio to your liking */
+  background-color: #282a36;
+  color: black;
+  padding: 20px;
+}
+
+.right-section {
+  flex: 1;
+  background-color: #00BABC;
+  padding: 20px;
+}
+
+.logo-placeholder {
+  font-size: 2em;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.verification-process {
+  max-width: 80%;
+}
+
+.upload-container {
+  background-color: #FFF;
+  width: auto; /* Ensure it uses the available space */
+  align-self: center;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.file-upload-box {
+  border: 2px dashed #CCCCCC;
+  padding: 30px;
+  margin: 20px 0;
+  cursor: pointer;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.upload-icon {
+  margin-bottom: 10px;
+  width: 50px; /* Adjust if necessary */
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+.document-icon {
+  margin-bottom: 50px;
+  margin-top: 50px;
+}
+
+.browse-link {
+  color: #00BABC; /* Match primary color */
+  cursor: pointer;
+}
+
+#validate-button {
+  background-color: #00BABC; /* New button color */
   color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
-.App-link {
-  color: #61dafb;
+#validate-button:hover {
+  background-color: #009DA9; /* Darker shade for hover effect */
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* Feedback message styling */
+#feedback-message {
+  color: #00BABC; /* Feedback color matching primary color */
+  margin-top: 10px;
 }
