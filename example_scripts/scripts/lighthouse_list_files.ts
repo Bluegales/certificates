@@ -1,8 +1,12 @@
 import lighthouse from '@lighthouse-web3/sdk'
-import { config } from "../config.js";
+import { load } from 'ts-dotenv';
+
+const env = load({
+  LIGHT_HOUSE_API_KEY: String,
+}, '../.env');
 
 async function getUploads() {
-    const response = await lighthouse.getUploads(config.lightHouse.apiKey)
+    const response = await lighthouse.getUploads(env.LIGHT_HOUSE_API_KEY)
     response.data.fileList.forEach((element) => console.log(element))
     // console.log(response)
     

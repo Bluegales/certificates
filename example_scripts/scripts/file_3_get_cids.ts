@@ -1,7 +1,5 @@
-import { Attestation, OnChainAttestation, SignProtocolClient, SpMode } from "@ethsign/sp-sdk";
 import { decodeAbiParameters } from "viem";
 import { config } from "../config";
-import fetch from 'node-fetch';
 import bs58 from "bs58";
 
 const toHexString = (byteArray: Uint8Array) => {

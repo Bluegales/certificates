@@ -1,8 +1,8 @@
-import { config } from "./config_public";
-import { SignProtocolClient, SpMode } from "@ethsign/sp-sdk";
+import { config } from "./config";
+import { SignProtocolClient, SpMode, EvmChains } from "@ethsign/sp-sdk";
 
 const client = new SignProtocolClient(SpMode.OnChain, {
-    chain: config.chain
+    chain: config.chain as EvmChains
 });
 
 const schemaId = config.documentHashSchema.split('_').slice(-1)[0];

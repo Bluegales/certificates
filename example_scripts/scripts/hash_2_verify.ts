@@ -1,9 +1,9 @@
 import { config } from "../config";
-import { SignProtocolClient, SpMode, Attestation } from "@ethsign/sp-sdk";
+import { SignProtocolClient, SpMode, EvmChains } from "@ethsign/sp-sdk";
 import { privateKeyToAccount } from "viem/accounts";
 
 const client = new SignProtocolClient(SpMode.OnChain, {
-    chain: config.chain,
+    chain: config.chain as EvmChains,
     account: privateKeyToAccount('0x0000000000000000000000000000000000000000000000000000000000000001'), // need it for the library to work
 });
 

@@ -6,13 +6,16 @@ This folder contains scripts for easily testing individual parts of the project.
 
 1. Copy `config_example.ts` to `config.ts`.
 2. *Optional:* Change the chain.
-3. Add the following information
-   1. your private key you want to use to attest
-   2. your public key under attester.
-   3. your lighthouse api key.
-4. Ensure you have funds on the specified chain.
+3. Add the following to the config
+   1. your public key under attester.
+4. Add the following enviroment variables
+   1. PRIVATE_KEY
+   2. LIGHT_HOUSE_API_KEY
+5. Ensure you have funds on the specified chain.
 
 To test, run:
+
+**IMPORTANT** run these scripts from within this directory!
 
 `npx tsx sample_scripts/script.ts`
 

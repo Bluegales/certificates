@@ -1,9 +1,13 @@
 import lighthouse from '@lighthouse-web3/sdk'
 import { privateKeyToAccount } from 'viem/accounts';
-import { config } from "../config";
+import { load } from 'ts-dotenv';
+
+const env = load({
+  PRIVATE_KEY: /^0x[0-9A-Fa-f]+$/,
+}, '../.env');
 
 async function decrypt(cid: string) {
-    const account = privateKeyToAccount(config.privateKey)
+    const account = privateKeyToAccount(env.PRIVATE_KEY as `0x${string}`)
 
     // this is the message that we would need to give to the wallet to sign
     const message = await lighthouse.getAuthMessage(account.address)
