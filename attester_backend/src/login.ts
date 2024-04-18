@@ -1,8 +1,6 @@
 
 import express, { Request, Response, NextFunction } from 'express';
 import { sendEmail } from './mail';
-import axios, { AxiosError } from 'axios';
-import { env } from './server';
 
 export const router = express.Router();
 
@@ -13,6 +11,8 @@ export const router = express.Router();
  *     summary: Check if user is logged in
  *     tags:
  *       - Authentication
+ *     security:
+ *       - JWT: []
  *     responses:
  *       200:
  *         description: Success
@@ -172,32 +172,27 @@ router.post('/verify', async (req: Request, res: Response) => {
     if (!req.session.email || !req.session.code) {
         res.status(400).json({ message: 'no login attempt' });
         return
+    }    
+    if (req.body.code !== req.session.code) {
+        res.status(400).json({ message: 'Invalid verification code' });
+        return
     }
-    
-    // if (req.body.code !== req.session.code) {
-    //     res.status(400).json({ message: 'Invalid verification code' });
-    //     return
-    // }
-
     req.session.loggedIn = true;
     delete req.session.code;
     req.session.save();
-    interface UserData { id: string }
-    try {
-        const response = await axios.get<UserData>(`${env.REMOTE_URL}/get-user`, { params: { email: req.session.email } });
-        req.session.user_id = response.data.id;
-        req.session.save();
-        res.status(200).json({ message: 'Session initiated successfully' });
-        return 
-    } catch (error) {
-        if ((error as AxiosError).response && (error as AxiosError).response!.status === 404) {
-            res.status(200).json({ message: 'Session initiated successfully' })
-            return 
-        } else {
-            res.status(500).send('Internal Server Error');
-            return 
-        }
-    }
+
+    res.status(200).json({ message: 'Session initiated successfully' });
+    // implement additional login checks here
+    // example:
+
+    // interface UserData { id: string }
+    // try {
+    //     const response = await axios.get<UserData>(`${env.REMOTE_URL}/get-user`, { params: { email: req.session.email } });
+    //     req.session.user_id = response.data.id;
+    //     req.session.save();
+    //     res.status(200).json({ message: 'Session initiated successfully' });
+    //     return 
+    // }
 });
 
 export const authenticateUser = (req: Request, res: Response, next: NextFunction) => {

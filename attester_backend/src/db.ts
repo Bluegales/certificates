@@ -7,14 +7,14 @@ const db = new sqlite3.Database('certificates.db');
 db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS certificate (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id TEXT,
+        email TEXT,
         eid TEXT,
-        certificate_kind TEXT
+        certificate_id TEXT
     )`);
 });
 
 // Function to insert a certificate into the database
-export function insertCertificate(eid: string, userId: string, certificateKind: string) {
+export function insertCertificateWithEid(eid: string, userId: string, certificateKind: string) {
     db.serialize(() => {
         db.run(`INSERT INTO certificate (user_id, eid, certificate_kind) VALUES (?, ?, ?)`,
             [userId, eid, certificateKind],

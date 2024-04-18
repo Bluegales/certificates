@@ -5,15 +5,6 @@ import swaggerUi from 'swagger-ui-express';
 import session from 'express-session';
 import { router as r1 } from './login';
 import { router as r2 } from './certificate';
-import { load } from 'ts-dotenv';
-import axios from 'axios';
-
-export const env = load({
-    REMOTE_URL: String,
-    REMOTE_API_KEY: String
-}, '../.env');
-
-axios.defaults.headers.common['ApiKey'] = env.REMOTE_API_KEY;
 
 const app = express();
 const PORT = 3000;

@@ -1,0 +1,9 @@
+{
+    "logo": "images/logo.png",
+    "issuer": "University of Blockchain",
+    "certificate_name": "Cert of Completion",
+    "name_of_recipient": "",
+    "content": "Less Text Test.",
+    "validatelink": "https://validate.me/here"
+  }
+  

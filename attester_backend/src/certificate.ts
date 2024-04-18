@@ -1,59 +1,103 @@
 
 import express, { Request, Response } from 'express';
 import { authenticateUser } from './login';
-import axios from 'axios';
-import {Certificates, certificates} from '../certificates';
+import { Certificate, CertificatesID, certificates } from '../certificate_list';
+import { generateDummyPdf } from './pdf_generator/pdf_generator'
+import { Readable } from 'stream';
+import { createHash } from 'crypto'
+import { createAttestation } from './hash_1_attest'
 
 export const router = express.Router();
-
-interface CertificateList {
-    id: number,
-    name: string;
-    description: string;
-}
 
 /**
  * @swagger
  * /certificate/available:
  *   get:
- *     summary: Shows avaliable certificates
+ *     summary: Retrieve available certificates
+ *     description: Retrieve a list of available certificates.
  *     tags:
  *       - Certificate
- *     description: |
- *       Retrieves the email from the session and makes a request to another server with that email to see redeemable certificates.
+ *     security:
+ *       - JWT: []
  *     responses:
- *       '200':
- *         description: Email processed successfully
- *       '400':
- *         description: Email not found in session
- *       '500':
- *         description: Internal Server Error
+ *       200:
+ *         description: A list of available certificates
+ *         content:
+ *           application/json:
+ *             schema:
+ *                type: array
+ *                items:
+ *                  type: object
+ *                  properties:
+ *                    id:
+ *                      type: integer
+ *                    name:
+ *                      type: string
+ *                    description:
+ *                      type: string
  */
 router.get('/certificate/available', authenticateUser, async (req: Request, res: Response) => {
-    // const list: Certificates = {}
-    // if (typeof req.session.user_id === 'undefined') {
-    //     list += certificates['dummy']
-    //     list.concat(
-    //         { name: "Dummy certificate", description: "We can't find you in our database but this certificate will attest you, that you visited our website :)"}
-    //     )
-    // } else {
-        
-    // }
-    return res.status(200);
-    // res.status(500).send('Not implemented');
-    // const email = req.session.email
-    // interface UserData {
-    //     id: number;
-    // }
-    // try {
-    //     const response = await axios.get<UserData>(`${env.REMOTE_URL}/get-user`, { params: { email: email } });
-    //     console.log(response.data.id);
-    // } catch (error) {
-    //     console.error('Error processing email:', error);
-    //     res.status(500).send('Internal Server Error');
-    // }
+    // Implement here your own login this is just dummy code to test it
+
+    var available: Certificate[] = []
+    available = available.concat(certificates[CertificatesID.Dummy])
+
+    const filteredElements = available.map(({ id, name, description }) => ({ id, name, description }));
+    res.status(200).json(filteredElements);
+    return
 });
 
-router.get('/protected', authenticateUser, (req: Request, res: Response) => {
+/**
+ * @swagger
+ * /certificate/{id}/create:
+ *   get:
+ *     summary: Create a certificate
+ *     description: Create a certificate for the entity with the specified ID.
+ *     tags:
+ *       - Certificate
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the entity for which the certificate is being created.
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Success. The certificate was created successfully.
+ *       400:
+ *         description: Bad Request. The request is malformed or missing required parameters.
+ *       500:
+ *         description: Internal Server Error. Something went wrong on the server side.
+ */
+router.get('/certificate/:id/create', async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const idNumber = parseInt(id);
+    if (isNaN(idNumber)) {
+        return res.status(400).json({ error: 'Invalid ID' });
+    }
+    const foundCertificate = Object.values(certificates).find(cert => cert.id === idNumber);
+    if (!foundCertificate) {
+        return res.status(404).json({ error: 'Certificate not found' });
+    }
+    const fileBuffer: Buffer = await generateDummyPdf(req.session.email ?? "noone")
+
+    const hash = createHash('sha256');
+    hash.update(fileBuffer);
+    const sha256Hash = hash.digest('hex');
+    console.log("SHA-256 Hash:", sha256Hash);
+    createAttestation(`0x${sha256Hash}`);
+    
+    const fileStream = new Readable();
+    fileStream.push(fileBuffer);
+    fileStream.push(null);
+
+    res.setHeader('Content-disposition', 'attachment; filename=certificate.pdf');
+    res.setHeader('Content-type', 'application/octet-stream');
+    fileStream.pipe(res);
+
+});
+
+router.post('/certificate/:id/download', authenticateUser, (req: Request, res: Response) => {
     res.json({ message: 'You are authorized to access this endpoint.' });
 });
