@@ -1,0 +1,9 @@
+{
+    "logo": "images/logo.png",
+    "issuer": "University of Blockchain",
+    "certificate_name": "Student Certificate",
+    "name_of_recipient": "",
+    "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis ante ipsum, viverra hendrerit turpis quis, rutrum mattis massa. Nullam et nibh arcu. Sed lobortis elit eu risus porttitor varius. Fusce in pharetra enim. Vestibulum sit amet purus orci. Fusce volutpat magna at purus posuere suscipit. Vivamus auctor nunc vel scelerisque posuere. Curabitur eu libero nec dolor varius vestibulum nec et tortor. Donec vestibulum rutrum purus, efficitur rhoncus lacus pretium a. Duis quis justo a massa congue convallis sit amet et nibh. Vestibulum orci elit, euismod sed rhoncus non, tempor nec felis. Aliquam vel leo semper, condimentum lacus ultrices, efficitur nibh.\n\nProin luctus quam tincidunt eros sodales, id faucibus lorem tincidunt. Cras tortor neque, malesuada vel sollicitudin eu, aliquet eu urna. Nam ut ligula sit amet dui efficitur volutpat. Quisque eget consectetur nulla. Morbi a auctor ante. Vestibulum id tincidunt eros. Vivamus justo eros",
+    "validatelink": "https://validate.me/here"
+  }
+  
