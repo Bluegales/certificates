@@ -171,6 +171,7 @@ router.post('/login', (req: Request, res: Response) => {
 router.post('/verify', async (req: Request, res: Response) => {
     if (!req.session.email || !req.session.code) {
         res.status(400).json({ message: 'no login attempt' });
+        return
     }
     
     // if (req.body.code !== req.session.code) {
@@ -186,12 +187,15 @@ router.post('/verify', async (req: Request, res: Response) => {
         const response = await axios.get<UserData>(`${env.REMOTE_URL}/get-user`, { params: { email: req.session.email } });
         req.session.user_id = response.data.id;
         req.session.save();
-        return res.status(200).json({ message: 'Session initiated successfully' });
+        res.status(200).json({ message: 'Session initiated successfully' });
+        return 
     } catch (error) {
         if ((error as AxiosError).response && (error as AxiosError).response!.status === 404) {
-            return res.status(200).json({ message: 'Session initiated successfully' })
+            res.status(200).json({ message: 'Session initiated successfully' })
+            return 
         } else {
-            return res.status(500).send('Internal Server Error');
+            res.status(500).send('Internal Server Error');
+            return 
         }
     }
 });
