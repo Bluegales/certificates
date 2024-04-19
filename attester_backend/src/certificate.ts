@@ -6,6 +6,8 @@ import { generateDummyPdf } from './pdf_generator/pdf_generator'
 import { Readable } from 'stream';
 import { createHash } from 'crypto'
 import { createAttestation } from './hash_1_attest'
+import { getCertificate, insertCertificate } from './db';
+import { createTempFile, deleteTempFile, downloadDecrypt, uploadEncrypted } from './file_upload_download';
 
 export const router = express.Router();
 
@@ -50,16 +52,16 @@ router.get('/certificate/available', authenticateUser, async (req: Request, res:
 /**
  * @swagger
  * /certificate/{id}/create:
- *   get:
+ *   post:
  *     summary: Create a certificate
- *     description: Create a certificate for the entity with the specified ID.
+ *     description: Create a certificate.
  *     tags:
  *       - Certificate
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: The ID of the entity for which the certificate is being created.
+ *         description: The ID of the certificate.
  *         schema:
  *           type: integer
  *     responses:
@@ -70,34 +72,83 @@ router.get('/certificate/available', authenticateUser, async (req: Request, res:
  *       500:
  *         description: Internal Server Error. Something went wrong on the server side.
  */
-router.get('/certificate/:id/create', async (req: Request, res: Response) => {
+router.post('/certificate/:id/create', async (req: Request, res: Response) => {
     const { id } = req.params;
     const idNumber = parseInt(id);
     if (isNaN(idNumber)) {
-        return res.status(400).json({ error: 'Invalid ID' });
+        res.status(400).json({ error: 'Invalid ID' });
+        return 
+    }
+    const cert = await getCertificate(req.session.email ?? "", idNumber)
+    if (cert.length != 0) {
+        res.status(400).json({ message: 'certificate already created' });
+        return;
     }
     const foundCertificate = Object.values(certificates).find(cert => cert.id === idNumber);
     if (!foundCertificate) {
-        return res.status(404).json({ error: 'Certificate not found' });
+        res.status(404).json({ error: 'Certificate not found' });
+        return 
     }
     const fileBuffer: Buffer = await generateDummyPdf(req.session.email ?? "noone")
 
+    // attestation
     const hash = createHash('sha256');
     hash.update(fileBuffer);
     const sha256Hash = hash.digest('hex');
-    console.log("SHA-256 Hash:", sha256Hash);
+    console.log(sha256Hash)
     createAttestation(`0x${sha256Hash}`);
-    
-    const fileStream = new Readable();
-    fileStream.push(fileBuffer);
-    fileStream.push(null);
+
+    // ipfs
+    const path = await createTempFile(fileBuffer)
+    const cid = await uploadEncrypted(path)
+    console.log(cid)
+    await deleteTempFile(path)
+
+    // local database
+    insertCertificate(req.session.email ?? "test", cid.data[0].Hash, idNumber)
+
+    res.status(200).json({ message: 'ok' });
+});
+
+/**
+ * @swagger
+ * /certificate/{id}/download:
+ *   get:
+ *     summary: Download a certificate
+ *     description: Dowload a certificate which was previously created.
+ *     tags:
+ *       - Certificate
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the certificate.
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Success. The certificate was downloaded successfully.
+ *       400:
+ *         description: Bad Request. The request is malformed or missing required parameters.
+ *       500:
+ *         description: Internal Server Error. Something went wrong on the server side.
+ */
+router.get('/certificate/:id/download', async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const idNumber = parseInt(id);
+    if (isNaN(idNumber)) {
+        res.status(400).json({ error: 'Invalid ID' });
+        return 
+    }
+    const cert = await getCertificate(req.session.email ?? "test", idNumber)
+    if (cert.length == 0) {
+        res.status(400).json({ message: 'certificate not created' });
+        return;
+    }
+    const arraybuffer : ArrayBuffer = await downloadDecrypt(cert[0].eid)
+    const buffer = Buffer.from(arraybuffer);
 
     res.setHeader('Content-disposition', 'attachment; filename=certificate.pdf');
     res.setHeader('Content-type', 'application/octet-stream');
-    fileStream.pipe(res);
-
-});
-
-router.post('/certificate/:id/download', authenticateUser, (req: Request, res: Response) => {
-    res.json({ message: 'You are authorized to access this endpoint.' });
+    res.send(buffer);
 });

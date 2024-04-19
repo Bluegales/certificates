@@ -35,9 +35,11 @@ export const router = express.Router();
  */
 router.get('/logged-in', (req: Request, res: Response) => {
     if (req.session.loggedIn === true) {
-        return res.status(200).json({ message: 'logged in' });
+        res.status(200).json({ message: 'logged in' });
+        return 
     } else {
-        return res.status(401).json({ message: 'Unauthorized' });
+        res.status(401).json({ message: 'Unauthorized' });
+        return 
     }
 });
 

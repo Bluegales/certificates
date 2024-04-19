@@ -1,3 +1,4 @@
+
 import express, { Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import swaggerJsdoc from 'swagger-jsdoc';
@@ -6,6 +7,12 @@ import session from 'express-session';
 import { router as r1 } from './login';
 import { router as r2 } from './certificate';
 import cors from 'cors';
+import { load } from 'ts-dotenv';
+
+export const env = load({
+    PRIVATE_KEY: /^0x[0-9A-Fa-f]+$/,
+    LIGHT_HOUSE_API_KEY: String
+  }, '../.env');
 
 const app = express();
 const PORT = 3000;

@@ -1,7 +1,7 @@
 import sqlite3 from 'sqlite3';
 
 // Open the SQLite database
-const db = new sqlite3.Database('certificates.db');
+const db = new sqlite3.Database('database.db');
 
 // Create the certificates table if it doesn't exist
 db.serialize(() => {
@@ -9,15 +9,15 @@ db.serialize(() => {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         email TEXT,
         eid TEXT,
-        certificate_id TEXT
+        certificate_id INTEGER
     )`);
 });
 
 // Function to insert a certificate into the database
-export function insertCertificateWithEid(eid: string, userId: string, certificateKind: string) {
+export function insertCertificate(email :string, eid: string, certificate_id: number) {
     db.serialize(() => {
-        db.run(`INSERT INTO certificate (user_id, eid, certificate_kind) VALUES (?, ?, ?)`,
-            [userId, eid, certificateKind],
+        db.run(`INSERT INTO certificate (email, eid, certificate_id) VALUES (?, ?, ?)`,
+            [email, eid, certificate_id],
             (err) => {
                 if (err) {
                     console.error('Error inserting certificate:', err);
@@ -28,9 +28,9 @@ export function insertCertificateWithEid(eid: string, userId: string, certificat
     });
 }
 
-export function getCertificatesByUserId(userId: number): Promise<any[]> {
+export function getCertificate(email: string, certificate_id: number): Promise<any[]> {
     return new Promise((resolve, reject) => {
-        db.all(`SELECT * FROM certificates WHERE user_id = ?`, [userId], (err, rows) => {
+        db.all(`SELECT * FROM certificate WHERE email = ? AND certificate_id = ?`, [email, certificate_id], (err, rows) => {
             if (err) {
                 reject(err);
             } else {
