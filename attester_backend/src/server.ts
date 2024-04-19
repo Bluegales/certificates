@@ -5,12 +5,14 @@ import swaggerUi from 'swagger-ui-express';
 import session from 'express-session';
 import { router as r1 } from './login';
 import { router as r2 } from './certificate';
+import cors from 'cors';
 
 const app = express();
 const PORT = 3000;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(cors())
 
 app.use(session({
     secret: 'your-secret-key',
@@ -42,6 +44,8 @@ const swaggerOptions = {
     apis: ['./src/login.ts', './src/certificate.ts'],
 };
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
+
+app.use(cors());
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
