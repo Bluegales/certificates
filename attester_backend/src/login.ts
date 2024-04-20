@@ -176,6 +176,7 @@ router.post('/verify', async (req: Request, res: Response) => {
         return
     }    
     if (req.body.code !== req.session.code) {
+        console.log(`tried logging in with ${req.body.code} expected ${req.session.code}`)
         res.status(400).json({ message: 'Invalid verification code' });
         return
     }

@@ -1,10 +1,7 @@
 
 import express, { Request, Response } from 'express';
-import { authenticateUser } from './login';
 import { Certificate, CertificatesID, certificates } from '../certificate_list';
 import { generateDummyPdf } from './pdf_generator/pdf_generator'
-import { createHash } from 'crypto'
-import { createAttestation } from './ethsign'
 import { getCertificate, insertCertificate } from './db';
 import * as lighthouse from './lighthouse'
 import * as ethsign from './ethsign'
