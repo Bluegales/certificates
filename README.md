@@ -1,15 +1,16 @@
 # onchain-certificates
 
-**The aim of this project is to offer a framework that any institution can quickly fork and set up. Central authorities can issue certificates, granting users the ability to easily verify their legitimacy, leveraging blockchain advantages while completely abstracting its complexity for a seamless user experience.** 
+**The aim of this project is to offer a framework that anyone can fork and set up themselves. Central authorities can issue and revoke certificates, granting anyone the ability to easily verify their legitimacy, leveraging blockchain advantages while abstracting its complexity for a seamless user experience.** 
 
 
 ### description
 
-This project enables central authorities to easily attest, and if necessary revoke, the hash of their certificates on-chain, giving anyone the ability to effortlessly verify the legitimacy of these certificates.
-The blockchain is seamlessly abstracted away, providing a user-friendly experience for the central authority issuing certificates, the users downloading the certificates and the entities validating them.
-Moreover, it empowers users with a wallet to securely store these certificates permanently and encrypted on Filecoin. No funds are required; all that's needed is a wallet.
-The project is designed to facilitate self-issuance of certificates with minimal adjustments. It is currently fully operational for our coding school, 42Heilbronn and can be reached under the following url:
+The project provides a simple structure for central authorities who want to utilize the advantages of blockchain. It is designed to facilitate self-issuance of certificates with minimal adjustments.
 
+After the certificate has been created by the institution, the hash will be stored on-chain as an attestation, and the certificate file will be stored encrypted on Lighthouse. 
+After users log in on the frontend, they can create the certificates, download them, and have the additional option to share them with a wallet address, granting that address the ability to download the certificate as well. 
+
+An additional frontend gives anyone the ability to upload a certificate as a file and it will show whether this certificate is valid or not. Certificates can even be validated if the original institution issuing the certificate ceases to exist. The blockchain is completely abstracted away, providing a user-friendly experience for the central authority issuing certificates, the users downloading the certificates, and the entities validating them.
 
 ## overview 
 
@@ -18,8 +19,7 @@ The project consists of 5 parts:
 - [overview](overview) the landing page with links to the following services
 - [attester](attester) the service to create and download the certificates
 - [validator](validator) the frontend to validate the certificates
-- [filecoin_viewer](filecoin_viewer) the frontend to download their certificates from filecoin
-
+- [filecoin-viewer](filecoin-viewer) the frontend to view and download own files from lighthouse / filecoin
 
 ## Process Workflow
 
@@ -98,18 +98,20 @@ sequenceDiagram
 
 ### technical
 
-This project consists of a backend automatically creating certificates as pdf files.
-These SHA256 hash of these certificates are attested onchain.
-Users are able to download the certificates on a frontend, while admins have a dashboard to revoke any of these attestations invalidating the certificate.
+This project involves two main components: a frontend + backend for managing certificate (called attestor) creation and download, and another frontend for certificate validation (called validator).
+
+On the attestor logged-in users can access a page displaying available certificates and their creation status. They can initiate the creation process for certificates that haven't been generated yet. The system generates a PDF certificate, hashes it with SHA256, and stores it encrypted on Lighthouse. The hash is then attested on-chain using the ethsign SDK. The file's content identifier (CID) is stored in a local database.
+
+For already created certificates, users can download them. The backend retrieves the certificate from Lighthouse and provides it to the user.
 
 A separate frontend has the ability to drag&drop a file, hashing it on the frontend without uploading the file and making a request to the sign protocol api to get the eid of the attestation. 
 That eid is used to get the exact attestation from an RPC, adding an additional layer of security, since its not required to trust the sign protocol api.
 It is checked whether the attestation hasn’t been revoked, the hash matches and that it has been attested by the correct entity.
 If all of these checks pass the uploaded file is shown as valid, otherwise it will be marked as invalid.
-Since this does not depend on our backend a fork of the frontend can still be used, even after the institution origianlly giving out the certificates has shut down. 
+Since this does not depend on our backend a fork of the frontend can still be used, even after the institution origianlly giving out the certificates ceases to exist.
 
-If the user decides to connect with a wallet using wallet connect, he gets the ability to upload any certificate to filecoin / lighthouse. Lighthouse ensures a permanent encrypted storage. The users address is added to the allowed list of recipients. An attestation is then made from the user himself with the cid of the file and a name chosen by the user. This ensures that the user will never lose his cid. The attestation is on-chain but utilising delegate calls ensuring that the user does not need funds.
-On a different frontend, which doesn’t need a connection to our backend the user can connect with his wallet. A request to the sign protocol is made to get all the eids that have been liked to this users wallet utilising the previously made attestations. The user gets the ability to download any of these files from the filecoin network. Since this service does not depend on any backend the user should be able to always keep access to the certificates, even after the institution originally giving out the certificates has shut down.
+If the user decides to connect with a wallet, he gets the ability to give any wallet the permission to download the certificate directly from lighthouse. Lighthouse ensures a permanent encrypted storage. The users address is added to the allowed list of recipients. An attestation is then made with the cid of the file and a name chosen by the user. This ensures that the user will never lose his cid. The attestation is on-chain but utilising delegate calls ensuring that the user does not need funds.
+On a different frontend, which doesn’t need a connection to our backend the user can connect with his wallet. A request to the sign protocol is made to get all the eids that have been liked to this users wallet utilising the previously made attestations. The user gets the ability to download any of these files from the filecoin network. Since this service does not depend on any backend the user should be able to always keep access to the certificates, even after the institution originally giving out the certificates ceases to exist.
 
 
 

@@ -35,7 +35,7 @@ export const router = express.Router();
  *                    description:
  *                      type: string
  *                    created:
- *                      type: bool
+ *                      type: boolean
  */
 
 interface CertificateWithCreated extends Certificate {
@@ -195,6 +195,12 @@ router.get('/certificate/:id/download', async (req: Request, res: Response) => {
  *         schema:
  *           type: string
  *           format: hex
+ *       - in: query
+ *         name: name
+ *         required: true
+ *         description: The name of the file (PUBLIC!!).
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
  *         description: Success. The certificate was downloaded successfully.
@@ -207,6 +213,7 @@ router.post('/certificate/:id/share', async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
         const walletAddress = req.query.wallet_address;
+        const name = req.query.name;
         const idNumber = parseInt(id);
         if (isNaN(idNumber)) {
             res.status(400).json({ error: 'Invalid ID' });
@@ -216,12 +223,17 @@ router.post('/certificate/:id/share', async (req: Request, res: Response) => {
             res.status(400).json({ error: 'Wallet address must be a string' });
             return 
         }
+        if (typeof name !== 'string') {
+            res.status(400).json({ error: 'Name must be a string' });
+            return 
+        }
         const cert = await getCertificate(req.session.email ?? "test", idNumber)
         if (cert.length == 0) {
             res.status(400).json({ message: 'certificate not created' });
             return;
         }
         const share_response = await lighthouse.Share(cert[0].cid, walletAddress)
+        await ethsign.createCidAttestation(name, cert[0].cid)
         res.status(200).json(share_response)
     } catch (err) {
         console.log(err)

@@ -41,7 +41,7 @@ async function createCidAttestation(name: string, cid: string) {
     schemaId: schemaId,
     data: { name: name, cid: getBytes32FromIpfsHash(cid) },
     indexingValue: cid,
-    recipients: ['0xc01A78dbf0b7fEbf6910784c4eB985Dcf67c1E5E']
+    recipients: ['0xE500695c1A67644Fe18AC423FEBdB2c123a1C08d']
   });
 
   console.log(res)
@@ -62,7 +62,7 @@ async function getAttestationCid(attestationId: string) {
 }
 
 var name = 'test_file';
-var cid = 'QmWC9AkGa6vSbR4yizoJrFMfmZh4XjZXxvRDknk2LdJffc';
+var cid = 'QmXdq5dLd1xUoH4uub342XUNngh8awfF44Ao8ZwUmXVVLc';
 
 createCidAttestation(name, cid).then(response => {
   console.log('validating existance of attestation')

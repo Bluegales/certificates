@@ -23,4 +23,4 @@ export async function Share(cid: string, publicKey: string) {
       }
 }
 
-Share('QmXdq5dLd1xUoH4uub342XUNngh8awfF44Ao8ZwUmXVVLc', '0xc007c8856246afb5B04C4689aCC17eF5A16C6be0')
+Share('QmXdq5dLd1xUoH4uub342XUNngh8awfF44Ao8ZwUmXVVLc', '0xE500695c1A67644Fe18AC423FEBdB2c123a1C08d')
