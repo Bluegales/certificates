@@ -3,30 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Attester</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Student Certificates</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
         <div class="left-section">
-            <div class="logo-placeholder">Attester</div>
-            <div id="loginPage" class="page">
-                <button id="loginButton" class="button-right">Log In</button>
+            <div id="loginForm">
+                <input type="email" id="email" placeholder="Enter your email">
+                <button onclick="login()">Login</button>
             </div>
-            <div id="mainPage" class="page" style="display:none;">
-                <button id="fetchResources" class="button-right">Get Documents</button>
-                <div id="resourceDisplay"></div>
-                <button id="generateDocument" class="button-right">Generate Document</button>
-                <a id="downloadLink" style="display:none;">Download Document</a>
+            <div id="verifyForm" style="display:none;">
+                <input type="text" id="code" placeholder="Enter verification code">
+                <button onclick="verifyCode()">Verify</button>
+            </div>
+            <div id="userActions" style="display:none;">
+                <button onclick="logout()">Logout</button>
+                <button onclick="listCertificates()">List Available Certificates</button>
+                <div id="certificatesList" style="display:none;"></div>
+                <button onclick="generateCertificate()">Generate Certificate</button>
+                <button onclick="downloadCertificate()">Download Certificate</button>
             </div>
         </div>
         <div class="right-section">
             <img src="document.png" alt="Placeholder Image" class="placeholder-image">
             <p class="info-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas eu ipsum ex. Donec commodo fringilla lorem eget ultricies.</p>
-            <button id="logoutButton" class="button-left" style="display:none;">Log Out</button>
         </div>
     </div>
-
-    <script src="app.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
