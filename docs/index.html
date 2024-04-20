@@ -10,9 +10,17 @@
         <div class="left-section">
             <div class="service-links-container">
                 <ul class="service-links">
-                    <li><a href="https://certificates-validator.vercel.app/">Validator</a></li>
-                    <li><a href="https://certificates-attester.vercel.app/">Attester</a></li>
-                    <li><a href="https://certificates-filecoin-viewer.vercel.app/">Filecoin Viewer</a></li>
+                    <li><a href="https://attester.cert-attest.lol/">Attester</a></li>
+                    <p>On the attestor, logged-in users can access a page displaying available certificates and their creation status. They can initiate the creation process for certificates that haven't been generated yet. 
+                        The system generates a PDF certificate, hashes it with SHA256, and stores it encrypted on Lighthouse. The hash is then attested on-chain using the ethsign SDK. The file's content identifier (CID) is stored in a local database.</p>
+                    <li><a href="https://validator.cert-attest.lol/">Validator</a></li>
+                    <p>The validator has the ability to drag&drop a file, hashing it on the frontend without uploading the file and making a request to the sign protocol api to get the eid of the attestation. 
+                        That eid is used to get the exact attestation from an RPC, adding an additional layer of security, since its not required to trust the sign protocol api.
+                        It is checked whether the attestation hasn’t been revoked, the hash matches and that it has been attested by the correct entity.
+                        If all of these checks pass the uploaded file is shown as valid, otherwise it will be marked as invalid.
+                        Since this does not depend on our backend a fork of the frontend can still be used, even after the institution origianlly giving out the certificates ceases to exist.</p>
+                    <li><a href="https://filecoin.cert-attest.lol/">Filecoin Viewer</a></li>
+                    <p>On the filecoin viewer, which also doesn’t need a connection to our backend the user can connect with his wallet. A request to the sign protocol is made to get all the eids that have been liked to this users wallet utilising the previously made attestations. The user gets the ability to download any of these files from the filecoin network. Since this service does not depend on any backend the user should be able to always keep access to the certificates, even after the institution originally giving out the certificates ceases to exist.</p>
                     <li><a href="https://github.com/patrick-hacks/certificates">
                         <img src="images/github.png" alt="GitHub Logo" width="20">
                     </a></li>
@@ -23,11 +31,11 @@
             <!-- <img src="images/logo.png" width="500"> -->
             <div class="verification-process">
                 <div class="document-icon">
-                    <img src="images/document.png" width="300" alt="Document">
+                    <img src="images/logo.png" width="300" alt="Document">
                 </div>
-                <h1>Landing Page</h1>
-                <p>Navigate to the service you want to utilize. This is an MVP. Issues can be reported on <a href="#">Our Github repository</a></p>
-            </div>
+                <h1>Certificate</h1>
+                <p>The project provides a simple structure for central authorities who want to utilize the advantages of blockchain. It is designed to facilitate self-issuance of certificates with minimal adjustments.
+                </div>
         </div>
     </div>
 </body>
