@@ -97,7 +97,7 @@ export const generatePDF = async (template: any, recipient: string) => {
 
 export async function generateDummyPdf(recipient: string) {
   return await generatePDF({
-    "logo": "src/pdf_generator/images/document.png",
+    "logo": "src/pdf_generator/images/logo.png",
     "issuer": "University of Blockchain",
     "certificate_name": "Attestation of Completion",
     "name_of_recipient": recipient,
