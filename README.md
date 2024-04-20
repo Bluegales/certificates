@@ -16,7 +16,7 @@ An additional frontend gives anyone the ability to upload a certificate as a fil
 
 The project consists of 5 parts:
 - [example_scripts](example_scripts) This folder contains scripts for easily testing individual parts of the project.
-- [overview](overview) the landing page with links to the following services
+- [overview](docs) the landing page with links to the following services
 - [attester](attester) the service to create and download the certificates
 - [validator](validator) the frontend to validate the certificates
 - [filecoin-viewer](filecoin-viewer) the frontend to view and download own files from lighthouse / filecoin
