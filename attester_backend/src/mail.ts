@@ -1,8 +1,9 @@
-// import nodemailer from 'nodemailer';
+import nodemailer from 'nodemailer';
 
 export function sendEmail(email: string, code: number) {
     // Use nodemailer or any other email sending library to send the code to the user's email
     // Example using nodemailer
+    
     // const transporter = nodemailer.createTransport({
     //     service: 'Gmail',
     //     auth: {

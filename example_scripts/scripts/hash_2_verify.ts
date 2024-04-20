@@ -89,7 +89,7 @@ async function verifyHash(hash: string) {
 
 // example code
 
-const validHash = '0xe3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
+const validHash = '0xc6e314016a55e568a36ab7d913b683c3bdcf18a51b6a5ce326d03b2686ae79e9'
 const invalidHash = '0xe3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b856'
 
 verifyHash(validHash)

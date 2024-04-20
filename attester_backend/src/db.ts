@@ -8,7 +8,7 @@ db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS certificate (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         email TEXT,
-        eid TEXT,
+        cid TEXT,
         certificate_id INTEGER
     )`);
 });
@@ -16,7 +16,7 @@ db.serialize(() => {
 // Function to insert a certificate into the database
 export function insertCertificate(email :string, eid: string, certificate_id: number) {
     db.serialize(() => {
-        db.run(`INSERT INTO certificate (email, eid, certificate_id) VALUES (?, ?, ?)`,
+        db.run(`INSERT INTO certificate (email, cid, certificate_id) VALUES (?, ?, ?)`,
             [email, eid, certificate_id],
             (err) => {
                 if (err) {

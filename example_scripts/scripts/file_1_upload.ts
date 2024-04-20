@@ -1,7 +1,6 @@
 import lighthouse from '@lighthouse-web3/sdk'
 import kavach from "@lighthouse-web3/kavach"
 import { privateKeyToAccount } from 'viem/accounts';
-import { config } from "../config.js";
 import { load } from 'ts-dotenv';
 
 const env = load({

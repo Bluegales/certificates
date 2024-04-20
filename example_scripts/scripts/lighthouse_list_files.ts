@@ -5,6 +5,8 @@ const env = load({
   LIGHT_HOUSE_API_KEY: String,
 }, '../.env');
 
+console.log(env)
+
 async function getUploads() {
     const response = await lighthouse.getUploads(env.LIGHT_HOUSE_API_KEY)
     response.data.fileList.forEach((element) => console.log(element))
