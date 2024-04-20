@@ -5,6 +5,7 @@ import { generateDummyPdf } from './pdf_generator/pdf_generator'
 import { getCertificate, insertCertificate } from './db';
 import * as lighthouse from './lighthouse'
 import * as ethsign from './ethsign'
+import { authenticateUser } from './login';
 
 export const router = express.Router();
 
@@ -42,7 +43,7 @@ interface CertificateWithCreated extends Certificate {
     created: boolean;
 }
 
-router.get('/certificate/available', async (req: Request, res: Response) => {
+router.get('/certificate/available', authenticateUser, async (req: Request, res: Response) => {
     // Implement here your own login this is just dummy code to test it
 
     var available: Certificate[] = []
@@ -86,7 +87,7 @@ router.get('/certificate/available', async (req: Request, res: Response) => {
  *       500:
  *         description: Internal Server Error. Something went wrong on the server side.
  */
-router.post('/certificate/:id/create', async (req: Request, res: Response) => {
+router.post('/certificate/:id/create', authenticateUser, async (req: Request, res: Response) => {
     const { id } = req.params;
     const idNumber = parseInt(id);
     if (isNaN(idNumber)) {
@@ -147,7 +148,7 @@ router.post('/certificate/:id/create', async (req: Request, res: Response) => {
  *       500:
  *         description: Internal Server Error. Something went wrong on the server side.
  */
-router.get('/certificate/:id/download', async (req: Request, res: Response) => {
+router.get('/certificate/:id/download', authenticateUser, async (req: Request, res: Response) => {
     const { id } = req.params;
     const idNumber = parseInt(id);
     if (isNaN(idNumber)) {
@@ -209,7 +210,7 @@ router.get('/certificate/:id/download', async (req: Request, res: Response) => {
  *       500:
  *         description: Internal Server Error. Something went wrong on the server side.
  */
-router.post('/certificate/:id/share', async (req: Request, res: Response) => {
+router.post('/certificate/:id/share', authenticateUser, async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
         const walletAddress = req.query.wallet_address;
