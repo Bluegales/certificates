@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { ethers } from 'ethers';
 import { getFiles } from './get_cids';
-import {ethers} from 'ethers'
-import lighthouse from '@lighthouse-web3/sdk'
+import lighthouse from '@lighthouse-web3/sdk';
+import './App.css';
 
 interface Element {
   name: string;
@@ -10,28 +11,73 @@ interface Element {
 
 const App: React.FC = () => {
   const [elements, setElements] = useState<Element[]>([]);
-  const [fileURL, setFileURL] = React.useState(null)
+  const [isMetaMaskAvailable, setIsMetaMaskAvailable] = useState(false);
 
-  
+  const checkMetaMaskInstallation = useCallback(() => {
+    const hasMetaMask = typeof window.ethereum !== 'undefined';
+    setIsMetaMaskAvailable(hasMetaMask);
+    return hasMetaMask;
+  }, []);
 
-  // Async function to fetch elements
-  const fetchElements = async () => {
-    const provider = new ethers.BrowserProvider(window.ethereum)
-    const signer = await provider.getSigner()
-    const address = await signer.getAddress()
+  const fetchElements = useCallback(async () => {
+    if (!checkMetaMaskInstallation()) {
+      console.error('MetaMask is not installed');
+      return;
+    }
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    const signer = await provider.getSigner();
     try {
+      const address = await signer.getAddress();
       const data = await getFiles(address);
       setElements(data);
     } catch (error) {
       console.error('Error fetching elements:', error);
     }
-  };
+  }, [checkMetaMaskInstallation]);
 
   useEffect(() => {
     fetchElements();
-  }, []);
+  }, [fetchElements]);
 
-  // Function to handle download
+  const encryptionSignature = async () => {
+    if (!isMetaMaskAvailable) {
+      console.error('MetaMask is not installed');
+      return { signedMessage: null, publicKey: null };
+    }
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    const signer = await provider.getSigner();
+    const address = await signer.getAddress();
+    const messageRequested = (await lighthouse.getAuthMessage(address)).data.message;
+    const signedMessage = await signer.signMessage(messageRequested);
+    return {
+      signedMessage,
+      publicKey: address
+    };
+  };
+
+  const decrypt = async (cid: string) => {
+    const { publicKey, signedMessage } = await encryptionSignature();
+    if (!publicKey || !signedMessage) {
+      console.error('Failed to get public key or signed message');
+      return;
+    }
+    const keyObject = await lighthouse.fetchEncryptionKey(
+      cid,
+      publicKey,
+      signedMessage
+    );
+    const fileType = "application/pdf";
+    const decrypted = await lighthouse.decryptFile(cid, keyObject.data.key as string, fileType);
+
+    const url = URL.createObjectURL(decrypted);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "certificate.pdf";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const handleDownload = async (cid: string) => {
     try {
       console.log(`Downloading element with CID: ${cid}`);
@@ -42,53 +88,31 @@ const App: React.FC = () => {
     }
   };
 
-  const encryptionSignature = async() =>{
-    const provider = new ethers.BrowserProvider(window.ethereum)
-    const signer = await provider.getSigner()
-    const address = await signer.getAddress()
-    const messageRequested = (await lighthouse.getAuthMessage(address)).data.message
-    const signedMessage = await signer.signMessage(messageRequested)
-    return({
-      signedMessage: signedMessage,
-      publicKey: address
-    })
-  }
-
-  const decrypt = async(cid: string) =>{
-    // Fetch file encryption key
-    // const cid = "QmVkbVeTGA7RHgvdt31H3ax1gW3pLi9JfW6i9hDdxTmcGK" //replace with your IPFS CID
-    const {publicKey, signedMessage} = await encryptionSignature()
-    const keyObject = await lighthouse.fetchEncryptionKey(
-      cid,
-      publicKey,
-      signedMessage
-    )   
-    const fileType = "application/pdf"
-    const decrypted = await lighthouse.decryptFile(cid, keyObject.data.key as string, fileType)
-    console.log(decrypted)
-
-    const url = URL.createObjectURL(decrypted)
-    console.log(url)
-    // setFileURL(url)
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "certificate.pdf";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }
-
   return (
-    <div>
-      <h1>Element List</h1>
-      <ul>
-        {elements.map((element) => (
-          <li key={element.cid}>
-            {element.name}
-            <button onClick={() => handleDownload(element.cid)}>Download</button>
-          </li>
-        ))}
-      </ul>
+    <div className="container">
+      <div className="left-section">
+        {/* Content on the left */}
+        {isMetaMaskAvailable ? (
+          <div className="elements-list">
+            {elements.map((element) => (
+              <div key={element.cid} className="element-item">
+                <span className="element-name">{element.name}</span>
+                <button className="download-button" onClick={() => handleDownload(element.cid)}>Download</button>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="metamask-message">MetaMask is required to interact with this application. Please install MetaMask and reload the page.</p>
+        )}
+      </div>
+      <div className="right-section">
+        {/* Logo and text on the right */}
+        <img src="/logo.png" width="300" alt="logo" />
+        <div className="verification-process">
+          <h2>Download your Signed Certificates from Filecoin</h2>
+          <p>Authenticate using Metamask. Page might need to be refreshed once</p>
+        </div>
+      </div>
     </div>
   );
 };
