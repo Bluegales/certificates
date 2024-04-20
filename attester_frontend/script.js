@@ -107,22 +107,21 @@ function listCertificates() {
 }
 
 function generateCertificate(certId) {
-    fetch(`${apiUrl}/certificate/${certId}/create`, {
-        method: 'GET',
+    fetch(`${apiUrl}/certificate/0/create`, {
+        method: 'POST',
         credentials: 'include'
     })
     .then(response => {
-        if (response.ok) return response.blob();
-        throw new Error('Failed to create certificate');
+        if (!response.ok) {
+            return response.json().then(err => { throw new Error(err.message); });
+        }
+        return response.json();
     })
-    .then(blob => {
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = "certificate.pdf";
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
+    .then(data => {
+        console.log(data.message);
+        document.getElementById('downloadCertificateButton').disabled = true;
+        document.getElementById('generateCertificateButton').style.display = 'none';
+        alert('Certificate generated successfully.');
     })
     .catch(error => {
         console.error('Error:', error);
@@ -130,10 +129,9 @@ function generateCertificate(certId) {
     });
 }
 
-function downloadCertificate() {
-    const certId = prompt("Enter the ID of the certificate to download:");
-    fetch(`${apiUrl}/certificate/${certId}/download`, {
-        method: 'POST',
+function downloadCertificate(certId) {
+    fetch(`${apiUrl}/certificate/0/download`, {
+        method: 'GET',
         credentials: 'include'
     })
     .then(response => response.blob())
@@ -151,4 +149,3 @@ function downloadCertificate() {
         alert('Error downloading certificate: ' + error.message);
     });
 }
-
