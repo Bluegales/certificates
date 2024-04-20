@@ -64,6 +64,8 @@ function verifyCode() {
             console.log("Verification successful:", result.body);
             document.getElementById('verifyForm').style.display = 'none';
             document.getElementById('userActions').style.display = 'block';
+            // Add the listCertificates call here after verification is successful and UI is updated
+            listCertificates();
         } else {
             throw new Error(`Failed to verify: ${result.body.message}`);
         }
@@ -75,6 +77,7 @@ function verifyCode() {
         document.getElementById('userActions').style.display = 'none';
     });
 }
+
 
 
 function logout() {
@@ -91,13 +94,34 @@ function listCertificates() {
     .then(response => response.json())
     .then(data => {
         const certificatesList = document.getElementById('certificatesList');
+        const generateButton = document.getElementById('generateCertificate');
+        const downloadButton = document.getElementById('downloadCertificate');
+
         certificatesList.innerHTML = '';
+        let anyCertificateAvailable = false;
+        let anyCertificateCreated = false;
+
         data.forEach(cert => {
             const certElement = document.createElement('div');
-            certElement.innerHTML = `ID: ${cert.id}, Name: ${cert.name}, Description: ${cert.description}
-            <button onclick="generateCertificate(${cert.id})">Generate</button>`;
+            certElement.innerHTML = `<b>ID</b>: ${cert.id}<br> <b>Name</b>: ${cert.name}<br> <b>Description</b>: ${cert.description}<br> <b>Created</b>: ${cert.created ? 'Yes' : 'No'}`;
             certificatesList.appendChild(certElement);
+
+            if (!cert.created) {
+                anyCertificateAvailable = true;
+            }
+            if (cert.created) {
+                anyCertificateCreated = true;
+            }
         });
+
+        // Enable or disable buttons based on certificate status
+        generateButton.disabled = !anyCertificateAvailable;
+        downloadButton.disabled = !anyCertificateCreated;
+
+        // Optionally hide buttons instead of disabling them
+        generateButton.classList.toggle('hidden', !anyCertificateAvailable);
+        downloadButton.classList.toggle('hidden', !anyCertificateCreated);
+
         certificatesList.style.display = 'block';
     })
     .catch(error => {
@@ -105,6 +129,8 @@ function listCertificates() {
         alert('Failed to retrieve certificates: ' + error.message);
     });
 }
+
+
 
 function generateCertificate(certId) {
     fetch(`${apiUrl}/certificate/0/create`, {
