@@ -104,15 +104,12 @@ function listCertificates() {
         const certificatesList = document.getElementById('certificatesList');
         const generateButton = document.getElementById('generateCertificateButton');
         const downloadButton = document.getElementById('downloadCertificateButton');
-
-        if (!certificatesList || !generateButton || !downloadButton) {
-            console.error('One or more elements are not available in the DOM');
-            return;
-        }
+        const shareButton = document.getElementById('shareCertificateButton'); // Assuming you have a share button
 
         certificatesList.innerHTML = '';
         let generateVisible = false;
         let downloadVisible = false;
+        let shareVisible = false;
 
         data.forEach(cert => {
             const certElement = document.createElement('div');
@@ -124,14 +121,16 @@ function listCertificates() {
             }
             if (cert.created) {
                 downloadVisible = true;
+                shareVisible = true; // Enable share button if certificate is created
             }
         });
 
         generateButton.style.display = generateVisible ? 'inline-block' : 'none';
         downloadButton.style.display = downloadVisible ? 'inline-block' : 'none';
+        shareButton.style.display = shareVisible ? 'inline-block' : 'none';
 
         if (downloadVisible) {
-            attachDownloadListener(); // Attach the event listener to the download button
+            enableDownloadButton(); // Ensure the download button is set up correctly
         }
 
         certificatesList.style.display = 'block';
@@ -142,11 +141,11 @@ function listCertificates() {
     });
 }
 
+
 function attachDownloadListener() {
     const downloadButton = document.getElementById('downloadCertificateButton');
     downloadButton.onclick = downloadCertificate; // Ensure the download function is triggered on click
 }
-
 
 
 function generateCertificate() {
@@ -208,3 +207,70 @@ function downloadCertificate() {
         alert('Error downloading certificate: ' + error.message);
     });
 }
+
+
+// Scripts to allow cert sharing with wallet address -- DEV ----
+
+function openShareModal() {
+    const modalContent = `
+        <div id="shareModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <p>Enter the wallet address and name of the certificate to share:</p>
+                <input type="text" id="walletAddress" placeholder="Wallet Address (hex)">
+                <input type="text" id="certificateName" placeholder="Certificate Name">
+                <button onclick="shareCertificate()">Share</button>
+            </div>
+        </div>
+    `;
+    document.body.innerHTML += modalContent;
+    document.getElementById('shareModal').style.display = 'block';
+}
+
+function closeModal() {
+    document.getElementById('shareModal').style.display = 'none';
+}
+
+function shareCertificate() {
+    const walletAddress = document.getElementById('walletAddress').value;
+    const certificateName = document.getElementById('certificateName').value;  // Get the certificate name from the input
+
+    if (!isValidWalletAddress(walletAddress)) {
+        alert('Please enter a valid wallet address.');
+        return;
+    }
+    if (!certificateName) {
+        alert('Please enter a name for the certificate.');
+        return;
+    }
+
+    // Prepare URL with name and wallet address query parameters
+    const shareUrl = `${apiUrl}/certificate/0/share?wallet_address=${walletAddress}&name=${encodeURIComponent(certificateName)}`;
+
+    fetch(shareUrl, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to share certificate');
+        }
+        return response.json();
+    })
+    .then(data => {
+        alert('Certificate shared successfully: ' + JSON.stringify(data));
+        closeModal(); // Close the modal on successful operation
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error sharing certificate: ' + error.message);
+    });
+}
+
+function isValidWalletAddress(address) {
+    return address.startsWith('0x') && address.length === 42;
+}
+
