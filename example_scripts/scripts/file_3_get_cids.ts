@@ -46,7 +46,9 @@ async function getCids(address: string): Promise<any | null> {
     const queryParams = {
         schemaId: config.cidFilesSchema,
         attester: config.attester,
+        indexingValue: address
     };
+    console.log(address)
     const queryString: string = new URLSearchParams(queryParams).toString();
     const fullUrl: string = config.baseUrl + 'index/attestations' + '?' + queryString;
     try {
@@ -75,6 +77,7 @@ async function getCids(address: string): Promise<any | null> {
 
 async function getFiles(address: string) {
     const id = await getCids(address);
+    console.log(id)
     if (id === null) {
         return false
     }
@@ -83,7 +86,7 @@ async function getFiles(address: string) {
 
 // example code
 
-const address = '0xc01A78dbf0b7fEbf6910784c4eB985Dcf67c1E5E'
+const address = '0xE500695c1A67644Fe18AC423FEBdB2c123a1C08d'
 
 getFiles(address)
     .then(result => {

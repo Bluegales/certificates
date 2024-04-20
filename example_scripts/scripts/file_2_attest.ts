@@ -40,8 +40,8 @@ async function createCidAttestation(name: string, cid: string) {
   const res = await client.createAttestation({
     schemaId: schemaId,
     data: { name: name, cid: getBytes32FromIpfsHash(cid) },
-    indexingValue: cid,
-    recipients: ['0xE500695c1A67644Fe18AC423FEBdB2c123a1C08d']
+    indexingValue: '0xE500695c1A67644Fe18AC423FEBdB2c123a1C08d',
+    // recipients: ['0xE500695c1A67644Fe18AC423FEBdB2c123a1C08d']
   });
 
   console.log(res)

@@ -48,6 +48,7 @@ async function getCids(address: string): Promise<any | null> {
     const queryParams = {
         schemaId: config.cidFilesSchema,
         attester: config.attester,
+        indexingValue: address,
     };
     const queryString: string = new URLSearchParams(queryParams).toString();
     const fullUrl: string = config.baseUrl + 'index/attestations' + '?' + queryString;

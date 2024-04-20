@@ -233,7 +233,7 @@ router.post('/certificate/:id/share', async (req: Request, res: Response) => {
             return;
         }
         const share_response = await lighthouse.Share(cert[0].cid, walletAddress)
-        await ethsign.createCidAttestation(name, cert[0].cid)
+        await ethsign.createCidAttestation(name, cert[0].cid, walletAddress)
         res.status(200).json(share_response)
     } catch (err) {
         console.log(err)

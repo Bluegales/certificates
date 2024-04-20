@@ -1,7 +1,7 @@
-const apiUrl = 'https://' + window.location.hostname + '/api'; // Base URL of the API
+// const apiUrl = 'https://' + window.location.hostname + '/api'; // Base URL of the API
 
 function checkLoggedIn() {
-    fetch(`${apiUrl}/logged-in`, {
+    fetch(`/api/logged-in`, {
         method: 'GET',
         credentials: 'include'
     })
@@ -23,7 +23,7 @@ function checkLoggedIn() {
 
 function login() {
     const email = document.getElementById('email').value;
-    fetch(`${apiUrl}/login`, {
+    fetch(`/api/login`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -50,7 +50,7 @@ function verifyCode() {
     }
 
     console.log("Sending verification code:", parsedCode); // Log the code to ensure it's being captured correctly as an integer
-    fetch(`${apiUrl}/verify`, {
+    fetch(`/api/verify`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -95,7 +95,7 @@ function logout() {
 }
 
 function listCertificates() {
-    fetch(`${apiUrl}/certificate/available`, {
+    fetch(`/api/certificate/available`, {
         method: 'GET',
         credentials: 'include'
     })
@@ -149,7 +149,7 @@ function attachDownloadListener() {
 
 
 function generateCertificate() {
-    fetch(`${apiUrl}/certificate/0/create`, {
+    fetch(`/api/certificate/0/create`, {
         method: 'POST',
         credentials: 'include'
     })
@@ -182,7 +182,7 @@ function generateCertificate() {
 
 
 function downloadCertificate() {
-    fetch(`${apiUrl}/certificate/0/download`, {
+    fetch(`/api/certificate/0/download`, {
         method: 'GET',
         credentials: 'include'
     })
@@ -245,7 +245,7 @@ function shareCertificate() {
     }
 
     // Prepare URL with name and wallet address query parameters
-    const shareUrl = `${apiUrl}/certificate/0/share?wallet_address=${walletAddress}&name=${encodeURIComponent(certificateName)}`;
+    const shareUrl = `/api/certificate/0/share?wallet_address=${walletAddress}&name=${encodeURIComponent(certificateName)}`;
 
     fetch(shareUrl, {
         method: 'POST',

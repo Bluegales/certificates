@@ -54,16 +54,17 @@ const getIpfsHashFromUint256 = (uint: BigInt) => {
   return getIpfsHashFromBytes32('0x' + bigint.toString(16))
 }
 
-export async function createCidAttestation(name: string, cid: string) {
+export async function createCidAttestation(name: string, cid: string, address: string) {
+  const account = privateKeyToAccount(env.PRIVATE_KEY as `0x${string}`)
   const client = new SignProtocolClient(SpMode.OnChain, {
     chain: config.chain as EvmChains,
-    account: privateKeyToAccount(env.PRIVATE_KEY as `0x${string}`),
+    account: account,
   });
   const res = await client.createAttestation({
     schemaId: fileSchemaId,
     data: { name: name, cid: getBytes32FromIpfsHash(cid) },
-    indexingValue: cid,
-    recipients: ['0xE500695c1A67644Fe18AC423FEBdB2c123a1C08d']
+    indexingValue: address,
+    recipients: []
   });
 
   console.log(res)
