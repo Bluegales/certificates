@@ -84,3 +84,15 @@ button {
     text-align: center;
     margin-bottom: 10px;
 }
+
+/* Style for disabled buttons to grey them out */
+button:disabled {
+    background-color: #b0bec5; /* Grey color */
+    cursor: not-allowed; /* Shows a 'not allowed' cursor */
+    opacity: 0.5; /* Makes button semi-transparent */
+}
+
+/* Optional: Add a class for hiding elements */
+.hidden {
+    display: none;
+}
