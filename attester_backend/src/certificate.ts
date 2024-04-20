@@ -108,16 +108,20 @@ router.post('/certificate/:id/create', async (req: Request, res: Response) => {
         return 
     }
 
-    // pdf generation
-    const fileBuffer: Buffer = await generateDummyPdf(req.session.email ?? "test")
-    // attestation
-    ethsign.attestBuffer(fileBuffer)
-    // lighthouse
-    const upload_response = await lighthouse.Upload(fileBuffer)
-    // local database
-    insertCertificate(req.session.email ?? "test", upload_response[0].Hash, idNumber)
-
-    res.status(200).json({ message: 'ok' });
+    try {
+        // pdf generation
+        const fileBuffer: Buffer = await generateDummyPdf(req.session.email ?? "test")
+        // attestation
+        ethsign.attestBuffer(fileBuffer)
+        // lighthouse
+        const upload_response = await lighthouse.Upload(fileBuffer)
+        // local database
+        insertCertificate(req.session.email ?? "test", upload_response[0].Hash, idNumber)
+        res.status(200).json({ message: 'ok' });
+    } catch (err) {
+        console.log(err)
+        res.status(500);
+    }
 });
 
 /**
@@ -156,12 +160,17 @@ router.get('/certificate/:id/download', async (req: Request, res: Response) => {
         res.status(400).json({ message: 'certificate not created' });
         return;
     }
-    const arraybuffer = await lighthouse.Download(cert[0].cid)
-    const buffer = Buffer.from(arraybuffer);
-
-    res.setHeader('Content-disposition', 'attachment; filename=certificate.pdf');
-    res.setHeader('Content-type', 'application/octet-stream');
-    res.send(buffer);
+    try {
+        const arraybuffer = await lighthouse.Download(cert[0].cid)
+        const buffer = Buffer.from(arraybuffer);
+    
+        res.setHeader('Content-disposition', 'attachment; filename=certificate.pdf');
+        res.setHeader('Content-type', 'application/octet-stream');
+        res.send(buffer);
+    } catch (err) {
+        console.log(err)
+        res.status(500);
+    }
 });
 
 /**
