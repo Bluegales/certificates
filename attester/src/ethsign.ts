@@ -1,4 +1,4 @@
-import { env } from './server';
+import { env } from '.';
 import { AttestationResult, EvmChains, SignProtocolClient, SpMode } from "@ethsign/sp-sdk";
 import { privateKeyToAccount } from "viem/accounts";
 import { config } from "../../config";

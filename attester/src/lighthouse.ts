@@ -1,7 +1,7 @@
 import lighthouse from '@lighthouse-web3/sdk'
 import kavach from "@lighthouse-web3/kavach"
 import { privateKeyToAccount } from 'viem/accounts';
-import { env } from './server';
+import { env } from '.';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';

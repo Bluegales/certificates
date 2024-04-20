@@ -1,5 +1,5 @@
 import * as mail from "mailersend";
-import {env} from "./server"
+import {env} from "."
 
 export function sendEmail(email: string, code: number) {
     const mailersend = new mail.MailerSend({
