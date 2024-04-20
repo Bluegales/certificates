@@ -34,7 +34,7 @@ button {
 /* Left section styling */
 .left-section {
     flex: 2; /* Takes 2/3 of the space */
-    background-color: #00BABC; /* Cyan-like color */
+    background-color: #282a36; /* Dark charcoal color */
     color: white;
     padding: 20px;
     display: flex;
@@ -46,7 +46,7 @@ button {
 /* Right section styling */
 .right-section {
     flex: 1; /* Takes 1/3 of the space */
-    background-color: #282a36; /* Dark charcoal color */
+    background-color: #00BABC; /* Cyan-like color */
     color: white;
     padding: 20px;
     display: flex;
@@ -56,12 +56,12 @@ button {
 }
 
 /* Button styling in left section */
-.left-section button {
+.right-section button {
     background-color: #282a36; /* Dark charcoal, opposite to its background */
 }
 
 /* Button styling in right section */
-.right-section button {
+.left-section button {
     background-color: #00BABC; /* Cyan-like, opposite to its background */
 }
 
@@ -76,7 +76,7 @@ button {
 
 /* Styling for the placeholder image and informational text in the right section */
 .placeholder-image {
-    max-width: 80%; /* Adjusted for better visual proportion */
+    max-width: 300px; /* Adjusted for better visual proportion */
     margin-bottom: 20px;
 }
 
@@ -84,13 +84,6 @@ button {
     text-align: center;
     margin-bottom: 10px;
 }
-
-/* Style for disabled buttons to grey them out */
-/* button:disabled {
-    background-color: #b0bec5; Grey color
-    cursor: not-allowed; Shows a 'not allowed' cursor
-    opacity: 0.5; Makes button semi-transparent
-} */
 
 /* Optional: Add a class for hiding elements */
 .hidden {
