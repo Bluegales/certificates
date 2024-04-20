@@ -1,29 +1,22 @@
-import nodemailer from 'nodemailer';
+import * as mail from "mailersend";
+import {env} from "./server"
 
 export function sendEmail(email: string, code: number) {
-    // Use nodemailer or any other email sending library to send the code to the user's email
-    // Example using nodemailer
-    
-    // const transporter = nodemailer.createTransport({
-    //     service: 'Gmail',
-    //     auth: {
-    //         user: 'your_email@gmail.com', // Your email
-    //         pass: 'your_password' // Your password
-    //     }
-    // });
+    const mailersend = new mail.MailerSend({
+        apiKey: env.MAILERSEND_API_KEY,
+    });
 
-    // const mailOptions = {
-    //     from: 'your_email@gmail.com',
-    //     to: email,
-    //     subject: 'Login Code',
-    //     text: `Your login code is: ${code}`
-    // };
+    const recipients = [new mail.Recipient(email, "Recipient")];
+    const sender = new mail.Sender("certificate@trial-0p7kx4xqp3vg9yjr.mlsender.net", "Vitalik Buterin")
 
-    // transporter.sendMail(mailOptions, (error, info) => {
-    //     if (error) {
-    //         console.log(error);
-    //     } else {
-    //         console.log('Email sent: ' + info.response);
-    //     }
-    // });
+    const emailParams: mail.EmailParams = new mail.EmailParams()
+        .setFrom(sender)
+        .setTo(recipients)
+        .setSubject("certificate login code")
+        .setText(`This is your login code: ${code}`);
+
+    mailersend.email
+        .send(emailParams)
+        .then((response) => console.log(response))
+        .catch((error) => console.log(error));
 }

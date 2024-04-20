@@ -13,7 +13,8 @@ import path from 'path';
 export const env = load({
     SESSION_KEY: String,
     PRIVATE_KEY: /^0x[0-9A-Fa-f]+$/,
-    LIGHT_HOUSE_API_KEY: String
+    LIGHT_HOUSE_API_KEY: String,
+    MAILERSEND_API_KEY: String
   }, '../.env');
 
 const app = express();
