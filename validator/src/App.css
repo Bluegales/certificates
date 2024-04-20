@@ -1,4 +1,4 @@
-ody, html {
+body, html {
   height: 100%;
   margin: 0;
   font-family: Arial, sans-serif;
@@ -27,6 +27,10 @@ ody, html {
 .right-section {
   flex: 1;
   background-color: #00BABC;
+  color: white;
+  flex-direction: column;
+  align-items: center; 
+  justify-content: center; 
   padding: 20px;
 }
 
