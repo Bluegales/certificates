@@ -19,10 +19,12 @@
             </div>
             <div id="userActions" style="display:none;">
                 <button onclick="logout()">Logout</button>
-                <button onclick="listCertificates()">List Available Certificates</button>
+                <p>These Certificates are currently available for your to generate and download</p>
+                <br>
                 <div id="certificatesList" style="display:none;"></div>
-                <!-- <button onclick="generateCertificate()">Generate Certificate</button> -->
-                <button onclick="downloadCertificate()">Download Certificate</button>
+                <br>
+                <button id="generateCertificateButton" onclick="generateCertificate()">Generate Certificate</button>
+                <button id="downloadCertificateButton" disabled>Download Certificate</button>                         
             </div>
         </div>
         <div class="right-section">
