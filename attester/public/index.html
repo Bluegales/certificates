@@ -24,12 +24,13 @@
                 <div id="certificatesList" style="display:none;"></div>
                 <br>
                 <button id="generateCertificateButton" onclick="generateCertificate()">Generate Certificate</button>
-                <button id="downloadCertificateButton" disabled>Download Certificate</button>                         
+                <button id="downloadCertificateButton" disabled>Download Certificate</button>
+                <button id="shareCertificateButton" style="display: none;" onclick="openShareModal()">Share Certificate</button>                       
             </div>
         </div>
         <div class="right-section">
             <img src="document.png" alt="Placeholder Image" class="placeholder-image">
-            <p class="info-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas eu ipsum ex. Donec commodo fringilla lorem eget ultricies.</p>
+            <p class="info-text">This is the Student Certificate Attester. Login with your E-Mail, receive a one time login token and access your certificates. Once generated they are stored on chain.</p>
         </div>
     </div>
     <script src="script.js"></script>
