@@ -28,14 +28,26 @@ export function insertCertificate(email :string, eid: string, certificate_id: nu
     });
 }
 
-export function getCertificate(email: string, certificate_id: number): Promise<any[]> {
-    return new Promise((resolve, reject) => {
-        db.all(`SELECT * FROM certificate WHERE email = ? AND certificate_id = ?`, [email, certificate_id], (err, rows) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(rows);
-            }
+export function getCertificate(email: string, certificate_id?: number): Promise<any[]> {
+    if (certificate_id !== undefined) {
+        return new Promise((resolve, reject) => {
+            db.all(`SELECT * FROM certificate WHERE email = ? AND certificate_id = ?`, [email, certificate_id], (err, rows) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(rows);
+                }
+            });
         });
-    });
+    } else {
+        return new Promise((resolve, reject) => {
+            db.all(`SELECT * FROM certificate WHERE email = ?`, [email], (err, rows) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(rows);
+                }
+            });
+        });
+    }
 }

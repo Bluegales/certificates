@@ -100,7 +100,7 @@ export async function generateDummyPdf(recipient: string) {
     "logo": "src/pdf_generator/images/logo.png",
     "issuer": "University of Blockchain",
     "certificate_name": "Cert of Completion",
-    "name_of_recipient": "",
+    "name_of_recipient": recipient,
     "content": "Less Text Test.",
     "validatelink": "https://validate.me/here"
 }, recipient)

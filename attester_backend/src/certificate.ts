@@ -37,15 +37,30 @@ export const router = express.Router();
  *                      type: string
  *                    description:
  *                      type: string
+ *                    created:
+ *                      type: bool
  */
-router.get('/certificate/available', authenticateUser, async (req: Request, res: Response) => {
+
+interface CertificateWithCreated extends Certificate {
+    created: boolean;
+}
+
+router.get('/certificate/available', async (req: Request, res: Response) => {
     // Implement here your own login this is just dummy code to test it
 
     var available: Certificate[] = []
     available = available.concat(certificates[CertificatesID.Dummy])
+    // add more certificates here
+    
+    const available_with_created = available.map(certificate => ({ ...certificate, created: false }));
+    const created_certificates = await getCertificate(req.session.email ?? "test");
+    available_with_created.forEach((certificate) => {
+        certificate.created = created_certificates.some((createdCertificate) => {
+            return createdCertificate.certificate_id === certificate.id;
+        });
+    });
 
-    const filteredElements = available.map(({ id, name, description }) => ({ id, name, description }));
-    res.status(200).json(filteredElements);
+    res.status(200).json(available_with_created);
     return
 });
 
@@ -81,7 +96,11 @@ router.post('/certificate/:id/create', async (req: Request, res: Response) => {
         res.status(400).json({ error: 'Invalid ID' });
         return 
     }
-    const cert = await getCertificate(req.session.email ?? "", idNumber)
+    if (idNumber != 0) {
+        res.status(403).json({ error: 'forbidden' });
+        return 
+    }
+    const cert = await getCertificate(req.session.email ?? "test", idNumber)
     if (cert.length != 0) {
         res.status(403).json({ message: 'certificate already created' });
         return;
@@ -93,7 +112,7 @@ router.post('/certificate/:id/create', async (req: Request, res: Response) => {
     }
 
     // pdf generation
-    const fileBuffer: Buffer = await generateDummyPdf(req.session.email ?? "noone")
+    const fileBuffer: Buffer = await generateDummyPdf(req.session.email ?? "test")
     // attestation
     ethsign.attestBuffer(fileBuffer)
     // lighthouse
@@ -135,11 +154,11 @@ router.get('/certificate/:id/download', async (req: Request, res: Response) => {
         return 
     }
     const cert = await getCertificate(req.session.email ?? "test", idNumber)
+    console.log(idNumber)
     if (cert.length == 0) {
         res.status(400).json({ message: 'certificate not created' });
         return;
     }
-
     const arraybuffer = await lighthouse.Download(cert[0].cid)
     const buffer = Buffer.from(arraybuffer);
 
