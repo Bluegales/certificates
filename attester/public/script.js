@@ -1,4 +1,4 @@
-const apiUrl = 'http://localhost:3000/api'; // Base URL of the API
+const apiUrl = 'https://' + window.location.hostname + '/api'; // Base URL of the API
 
 function checkLoggedIn() {
     fetch(`${apiUrl}/logged-in`, {
