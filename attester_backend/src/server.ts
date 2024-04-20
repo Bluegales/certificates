@@ -10,6 +10,7 @@ import cors from 'cors';
 import { load } from 'ts-dotenv';
 
 export const env = load({
+    SESSION_KEY: String,
     PRIVATE_KEY: /^0x[0-9A-Fa-f]+$/,
     LIGHT_HOUSE_API_KEY: String
   }, '../.env');
@@ -22,7 +23,7 @@ app.use(bodyParser.json());
 app.use(cors())
 
 app.use(session({
-    secret: 'your-secret-key',
+    secret: env.SESSION_KEY,
     resave: false,
     saveUninitialized: true,
     cookie: {
