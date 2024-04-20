@@ -78,7 +78,15 @@ function verifyCode() {
     });
 }
 
-
+function enableDownloadButton() {
+    const downloadButton = document.getElementById('downloadCertificateButton');
+    if (downloadButton) {
+        downloadButton.addEventListener('click', downloadCertificate);
+        downloadButton.disabled = false; // Make sure the button is enabled when it should be
+    } else {
+        console.error('Download button not found in the DOM');
+    }
+}
 
 function logout() {
     // Clear session on server if necessary
@@ -94,33 +102,37 @@ function listCertificates() {
     .then(response => response.json())
     .then(data => {
         const certificatesList = document.getElementById('certificatesList');
-        const generateButton = document.getElementById('generateCertificate');
-        const downloadButton = document.getElementById('downloadCertificate');
+        const generateButton = document.getElementById('generateCertificateButton');
+        const downloadButton = document.getElementById('downloadCertificateButton');
+
+        if (!certificatesList || !generateButton || !downloadButton) {
+            console.error('One or more elements are not available in the DOM');
+            return;
+        }
 
         certificatesList.innerHTML = '';
-        let anyCertificateAvailable = false;
-        let anyCertificateCreated = false;
+        let generateVisible = false;
+        let downloadVisible = false;
 
         data.forEach(cert => {
             const certElement = document.createElement('div');
-            certElement.innerHTML = `<b>ID</b>: ${cert.id}<br> <b>Name</b>: ${cert.name}<br> <b>Description</b>: ${cert.description}<br> <b>Created</b>: ${cert.created ? 'Yes' : 'No'}`;
+            certElement.innerHTML = `<b>ID</b>: ${cert.id}<br><b>Name</b>: ${cert.name}<br><b>Description</b>: ${cert.description}<br><b>Created</b>: ${cert.created ? 'Yes' : 'No'}`;
             certificatesList.appendChild(certElement);
 
             if (!cert.created) {
-                anyCertificateAvailable = true;
+                generateVisible = true;
             }
             if (cert.created) {
-                anyCertificateCreated = true;
+                downloadVisible = true;
             }
         });
 
-        // Enable or disable buttons based on certificate status
-        generateButton.disabled = !anyCertificateAvailable;
-        downloadButton.disabled = !anyCertificateCreated;
+        generateButton.style.display = generateVisible ? 'inline-block' : 'none';
+        downloadButton.style.display = downloadVisible ? 'inline-block' : 'none';
 
-        // Optionally hide buttons instead of disabling them
-        generateButton.classList.toggle('hidden', !anyCertificateAvailable);
-        downloadButton.classList.toggle('hidden', !anyCertificateCreated);
+        if (downloadVisible) {
+            attachDownloadListener(); // Attach the event listener to the download button
+        }
 
         certificatesList.style.display = 'block';
     })
@@ -130,9 +142,14 @@ function listCertificates() {
     });
 }
 
+function attachDownloadListener() {
+    const downloadButton = document.getElementById('downloadCertificateButton');
+    downloadButton.onclick = downloadCertificate; // Ensure the download function is triggered on click
+}
 
 
-function generateCertificate(certId) {
+
+function generateCertificate() {
     fetch(`${apiUrl}/certificate/0/create`, {
         method: 'POST',
         credentials: 'include'
@@ -144,10 +161,19 @@ function generateCertificate(certId) {
         return response.json();
     })
     .then(data => {
-        console.log(data.message);
-        document.getElementById('downloadCertificateButton').disabled = true;
-        document.getElementById('generateCertificateButton').style.display = 'none';
+        console.log(data.message); // Log the server message
+        // Assuming the Download button needs to be enabled
+        const downloadButton = document.getElementById('downloadCertificateButton');
+        downloadButton.disabled = false; // Enable the Download button
+        
+        // Assuming you want to hide the Generate button after successful generation
+        const generateButton = document.getElementById('generateCertificateButton');
+        generateButton.style.display = 'none'; // Hide the Generate button
+
         alert('Certificate generated successfully.');
+
+        // Optionally, refresh the list of certificates
+        listCertificates(); // You might need to define or modify this function to suit this use case
     })
     .catch(error => {
         console.error('Error:', error);
@@ -155,20 +181,27 @@ function generateCertificate(certId) {
     });
 }
 
-function downloadCertificate(certId) {
+
+function downloadCertificate() {
     fetch(`${apiUrl}/certificate/0/download`, {
         method: 'GET',
         credentials: 'include'
     })
-    .then(response => response.blob())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.blob();
+    })
     .then(blob => {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = "certificate.pdf";
+        a.download = "certificate.pdf"; // Ensure this name matches your expected content
         document.body.appendChild(a);
         a.click();
         a.remove();
+        window.URL.revokeObjectURL(url); // Clean up the URL object
     })
     .catch(error => {
         console.error('Error:', error);
