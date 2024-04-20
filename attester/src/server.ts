@@ -8,6 +8,7 @@ import { router as r1 } from './login';
 import { router as r2 } from './certificate';
 import cors from 'cors';
 import { load } from 'ts-dotenv';
+import path from 'path';
 
 export const env = load({
     SESSION_KEY: String,
@@ -56,9 +57,10 @@ const swaggerSpec = swaggerJsdoc(swaggerOptions);
 app.use(cors());
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use(express.static(path.join(__dirname, '../public')));
 
-app.use(r1);
-app.use(r2);
+app.use('/api', r1);
+app.use('/api', r2);
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

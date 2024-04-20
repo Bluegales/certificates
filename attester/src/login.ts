@@ -6,7 +6,7 @@ export const router = express.Router();
 
 /**
  * @swagger
- * /logged-in:
+ * /api/logged-in:
  *   get:
  *     summary: Check if user is logged in
  *     tags:
@@ -45,7 +45,7 @@ router.get('/logged-in', (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /login:
+ * /api/login:
  *   post:
  *     summary: Log in user and send verification code to email
  *     tags:
@@ -113,7 +113,7 @@ router.post('/login', (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /verify:
+ * /api/verify:
  *   post:
  *     summary: Verify code and initiate session
  *     tags:

@@ -10,7 +10,7 @@ export const router = express.Router();
 
 /**
  * @swagger
- * /certificate/available:
+ * /api/certificate/available:
  *   get:
  *     summary: Retrieve available certificates
  *     description: Retrieve a list of available certificates.
@@ -63,7 +63,7 @@ router.get('/certificate/available', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /certificate/{id}/create:
+ * /api/certificate/{id}/create:
  *   post:
  *     summary: Create a certificate
  *     description: Create a certificate.
@@ -126,7 +126,7 @@ router.post('/certificate/:id/create', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /certificate/{id}/download:
+ * /api/certificate/{id}/download:
  *   get:
  *     summary: Download a certificate
  *     description: Dowload a certificate which was previously created.
@@ -175,7 +175,7 @@ router.get('/certificate/:id/download', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /certificate/{id}/share:
+ * /api/certificate/{id}/share:
  *   post:
  *     summary: Share a certificate with a wallet address
  *     description: Gives the holder of a wallet permission to download the certificate
