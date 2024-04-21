@@ -2,7 +2,7 @@
 
 **The aim of this project is to offer a framework that anyone can fork and set up themselves. Central authorities can issue and revoke certificates, granting anyone the ability to easily verify their legitimacy, leveraging blockchain advantages while abstracting its complexity for a seamless user experience.** 
 
-![logo](docs/images/logo.png)
+![logo](docs/images/logo.png | width=100)
 
 ### description
 
@@ -25,7 +25,7 @@ The project consists of 5 parts:
 - [overview](docs) the landing page with links to the following services
 - [attester](attester) the service to create and download the certificates
 - [validator](validator) the frontend to validate the certificates
-- [filecoin-viewer](filecoin-viewer) the frontend to view and download own files from lighthouse / filecoin
+- [filecoin_viewer](filecoin_viewer) the frontend to view and download own files from lighthouse / filecoin
 
 ## Process Workflow
 
