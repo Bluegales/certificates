@@ -1,6 +1,5 @@
 # onchain-certificates
 
-
 **The aim of this project is to offer a framework that anyone can fork and set up themselves. Central authorities can issue and revoke certificates, granting anyone the ability to easily verify their legitimacy, leveraging blockchain advantages while abstracting its complexity for a seamless user experience.** 
 
 ![logo](docs/images/logo.png)
@@ -9,8 +8,19 @@
 
 The project provides a simple structure for central authorities who want to utilize the advantages of blockchain. It is designed to facilitate self-issuance of certificates with minimal adjustments.
 
+Key points are:
+Proof validity of certificates on-chain (even if the institution ceases to exist)
+Download the certificates 
+
+After users log in on the frontend, they can start the creation process of the certificates.
+The central institution will then store the hash of the certificate on-chain as an attestation and upload it encrypted to Lighthouse.
+
+The user can then download the certificate directly from the frontend.
+The central institution will store 
+
+
+ download them, and have the additional option to share them with a wallet address, granting that address the ability to download the certificate as well. 
 After the certificate has been created by the institution, the hash will be stored on-chain as an attestation, and the certificate file will be stored encrypted on Lighthouse. 
-After users log in on the frontend, they can create the certificates, download them, and have the additional option to share them with a wallet address, granting that address the ability to download the certificate as well. 
 
 An additional frontend gives anyone the ability to upload a certificate as a file and it will show whether this certificate is valid or not. Certificates can even be validated if the original institution issuing the certificate ceases to exist. The blockchain is completely abstracted away, providing a user-friendly experience for the central authority issuing certificates, the users downloading the certificates, and the entities validating them.
 
@@ -31,15 +41,29 @@ sequenceDiagram
     actor User
     participant Institution
     participant Blockchain
+    participant Filecoin
     User-->>Institution: Create certificate
-    Institution->>User: Certificate
     Institution->>Blockchain: Hash of certificate
     Note over Institution,Blockchain: as attestation on sign protocol
+    Institution->>Filecoin: certificate
+    Note over Institution,Filecoin: encrypted with Lighthouse Kavach 
     opt optional revoke
         Institution->>Blockchain: Revoke attestation
     end
 ```
 
+### Certificate download
+```mermaid
+sequenceDiagram
+    actor User
+    participant Institution
+    participant Filecoin
+    User-->>Institution: Download certificate
+    Institution-->>Filecoin: Download certificate
+    Note over Institution,Filecoin: signed message 
+    Filecoin->>Institution: Certificate
+    Institution->>User: Certificate
+```
 
 ### Certificate validation
 The diagram illustrates that the Institution's role in the process has become obsolete; even after its shutdown, the process continues to function seamlessly.
@@ -59,7 +83,7 @@ sequenceDiagram
     end
 ```
 
-## Optional decentalised storage of certificates
+## Optional decentalised access of certificates
 
 ### Certificate upload
 ```mermaid
@@ -68,14 +92,10 @@ sequenceDiagram
     participant Institution
     participant Filecoin
     participant Blockchain
-    User-->>Institution: Upload to filecoin
-    Institution->>Filecoin: Certificate
-    Note over Institution,Filecoin: encrypted with Kavach
-    Filecoin->>Institution: Cid of file
-    Institution->>Filecoin: give user read permission
-    Institution->>Blockchain: Cid of file
-    Note over Institution,Blockchain: as attestation on sign protocol
-    Note over Institution,Blockchain: user as recipient
+    User-->>Institution: Share with wallet
+    Institution->>Filecoin: Share with wallet
+    Institution->>Blockchain: cid 
+    Note over Institution,Blockchain: as attesation to wallet of user
 ```
 
 ### Certificate download from filecoin
@@ -88,7 +108,7 @@ sequenceDiagram
     participant Blockchain
     participant Institution
     User-->>Blockchain: Get my cids
-    Blockchain->>User: Cids of files
+    Blockchain->>User: Cids of certificates
     User-->>Filecoin: Download cid
     Note over User,Filecoin: as a signed message
     alt ok
