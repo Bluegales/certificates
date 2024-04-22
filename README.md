@@ -28,7 +28,7 @@ The project consists of 5 parts:
 - [overview](docs) the landing page with links to the following services
 - [attester](attester) the service to create and download the certificates
 - [validator](validator) the frontend to validate the certificates
-- [filecoin-viewer](filecoin-viewer) the frontend to view and download own files from lighthouse / filecoin
+- [filecoin_viewer](filecoin_viewer) the frontend to view and download own files from lighthouse / filecoin
 
 ## Process Workflow
 
