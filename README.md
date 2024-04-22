@@ -1,5 +1,8 @@
 # onchain-certificates
 
+## LIVE VERSION:
+### https://www.cert-attest.lol/
+
 **The aim of this project is to offer a framework that anyone can fork and set up themselves. Central authorities can issue and revoke certificates, granting anyone the ability to easily verify their legitimacy, leveraging blockchain advantages while abstracting its complexity for a seamless user experience.** 
 
 ![logo](docs/images/logo.png)
